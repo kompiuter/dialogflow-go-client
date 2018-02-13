@@ -5,22 +5,22 @@ import (
 	"log"
 
 	df "github.com/kompiuter/dialogflow-go-client"
-	"github.com/kompiuter/dialogflow-go-client/models"
+	"github.com/kompiuter/dialogflow-go-client/model"
 )
 
 func main() {
-	err, client := df.NewDialogFlowClient(models.Options{
+	err, client := df.NewDialogFlowClient(model.Options{
 		AccessToken: "<API.AI TOKEN GOES HERE>",
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	intents, err := client.IntentsFindAllRequest()
+	entities, err := client.EntitiesFindAllRequest()
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, intent := range intents {
-		fmt.Println(intent.Name)
+	for _, entity := range entities {
+		fmt.Println(entity.Name)
 	}
 }

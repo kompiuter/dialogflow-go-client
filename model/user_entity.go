@@ -1,4 +1,4 @@
-package models
+package model
 
 type UserEntity struct {
 	SessionID string  `json:"sessionId,omitempty"`

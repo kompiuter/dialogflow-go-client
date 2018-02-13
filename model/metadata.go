@@ -1,4 +1,4 @@
-package models
+package model
 
 type Metadata struct {
 	IntentID                  string `json:"intentId,omitempty"`

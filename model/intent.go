@@ -1,4 +1,4 @@
-package models
+package model
 
 type Intent struct {
 	ID                    string         `json:"id,omitempty"`

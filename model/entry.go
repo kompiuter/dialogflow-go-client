@@ -1,4 +1,4 @@
-package models
+package model
 
 type Entry struct {
 	Value    string   `json:"value,omitempty"`

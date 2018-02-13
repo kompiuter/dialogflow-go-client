@@ -1,4 +1,4 @@
-package models
+package model
 
 type Context struct {
 	Name       string           `json:"name,omitempty"`

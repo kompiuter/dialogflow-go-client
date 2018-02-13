@@ -1,4 +1,4 @@
-package models
+package model
 
 type IntentAgent struct {
 	ID             string       `json:"id,omitempty"`

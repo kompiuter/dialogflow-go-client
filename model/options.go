@@ -1,4 +1,4 @@
-package models
+package model
 
 type Options struct {
 	AccessToken string

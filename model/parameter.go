@@ -1,4 +1,4 @@
-package models
+package model
 
 type Parameter struct {
 	Name         string   `json:"name,omitempty"`

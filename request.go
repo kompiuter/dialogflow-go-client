@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/kompiuter/dialogflow-go-client/models"
+	"github.com/kompiuter/dialogflow-go-client/model"
 )
 
 type Request struct {
@@ -18,7 +18,7 @@ type Request struct {
 }
 
 // Initialize a new HTTP request
-func NewRequest(client *DialogFlowClient, overridedRequestOptions models.RequestOptions) *Request {
+func NewRequest(client *DialogFlowClient, overridedRequestOptions model.RequestOptions) *Request {
 	headers := map[string]string{
 		"Authorization": "Bearer " + client.GetAccessToken(),
 		"Content-Type":  "application/json",

@@ -1,4 +1,4 @@
-package models
+package model
 
 type Message struct {
 	Type   int    `json:"type,omitempty"`
