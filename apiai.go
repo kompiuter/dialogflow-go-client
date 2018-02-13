@@ -18,9 +18,9 @@ type DialogFlowClient struct {
 }
 
 // Create API.AI instance
-func NewDialogFlowClient(options model.Options) (error, *DialogFlowClient) {
+func NewDialogFlowClient(options model.Options) (*DialogFlowClient, error) {
 	if (reflect.DeepEqual(options, model.Options{}) || options.AccessToken == "") {
-		return errors.New("Access token is required for new ApiAiClient instance"), nil
+		return nil, errors.New("Access token is required for new ApiAiClient instance")
 	}
 
 	client := &DialogFlowClient{
@@ -48,7 +48,7 @@ func NewDialogFlowClient(options model.Options) (error, *DialogFlowClient) {
 		client.sessionID = u.String()
 	}
 
-	return nil, client
+	return client, nil
 }
 
 // Takes natural language text and information as query parameters and returns information as JSON

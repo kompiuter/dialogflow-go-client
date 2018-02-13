@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	err, client := df.NewDialogFlowClient(model.Options{
+	client, err := df.NewDialogFlowClient(model.Options{
 		AccessToken: "<API.AI TOKEN GOES HERE>",
 	})
 	if err != nil {
