@@ -5,7 +5,7 @@ import (
 	"errors"
 	"reflect"
 
-	. "github.com/kompiuter/dialogflow-go-client/models"
+	"github.com/kompiuter/dialogflow-go-client/models"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -18,8 +18,8 @@ type DialogFlowClient struct {
 }
 
 // Create API.AI instance
-func NewDialogFlowClient(options Options) (error, *DialogFlowClient) {
-	if (reflect.DeepEqual(options, Options{}) || options.AccessToken == "") {
+func NewDialogFlowClient(options models.Options) (error, *DialogFlowClient) {
+	if (reflect.DeepEqual(options, models.Options{}) || options.AccessToken == "") {
 		return errors.New("Access token is required for new ApiAiClient instance"), nil
 	}
 
@@ -29,17 +29,17 @@ func NewDialogFlowClient(options Options) (error, *DialogFlowClient) {
 
 	client.apiBaseUrl = options.ApiBaseUrl
 	if client.apiBaseUrl == "" {
-		client.apiBaseUrl = DEFAULT_BASE_URL
+		client.apiBaseUrl = models.DEFAULT_BASE_URL
 	}
 
 	client.apiLang = options.ApiLang
 	if client.apiLang == "" {
-		client.apiLang = DEFAULT_CLIENT_LANG
+		client.apiLang = models.DEFAULT_CLIENT_LANG
 	}
 
 	client.apiVersion = options.ApiVersion
 	if client.apiVersion == "" {
-		client.apiVersion = DEFAULT_API_VERSION
+		client.apiVersion = models.DEFAULT_API_VERSION
 	}
 
 	client.sessionID = options.SessionID
@@ -52,10 +52,10 @@ func NewDialogFlowClient(options Options) (error, *DialogFlowClient) {
 }
 
 // Takes natural language text and information as query parameters and returns information as JSON
-func (client *DialogFlowClient) QueryFindRequest(query Query) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) QueryFindRequest(query models.Query) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(query, Query{}) {
+	if reflect.DeepEqual(query, models.Query{}) {
 		return response, errors.New("query cannot be empty")
 	}
 
@@ -73,7 +73,7 @@ func (client *DialogFlowClient) QueryFindRequest(query Query) (QueryResponse, er
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:         client.GetBaseUrl() + "query",
 			Method:      "GET",
 			Body:        nil,
@@ -91,16 +91,16 @@ func (client *DialogFlowClient) QueryFindRequest(query Query) (QueryResponse, er
 }
 
 // Takes natural language text and information as JSON in the POST body and returns information as JSON
-func (client *DialogFlowClient) QueryCreateRequest(query Query) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) QueryCreateRequest(query models.Query) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(query, Query{}) {
+	if reflect.DeepEqual(query, models.Query{}) {
 		return response, errors.New("query cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "query?v=" + client.GetApiVersion(),
 			Method: "POST",
 			Body:   query,
@@ -117,12 +117,12 @@ func (client *DialogFlowClient) QueryCreateRequest(query Query) (QueryResponse, 
 }
 
 // Retrieves a list of all entities for the agent
-func (client *DialogFlowClient) EntitiesFindAllRequest() ([]Entity, error) {
-	var response []Entity
+func (client *DialogFlowClient) EntitiesFindAllRequest() ([]models.Entity, error) {
+	var response []models.Entity
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "entities?v=" + client.GetApiVersion(),
 			Method: "GET",
 			Body:   nil,
@@ -139,8 +139,8 @@ func (client *DialogFlowClient) EntitiesFindAllRequest() ([]Entity, error) {
 }
 
 // Retrieves the specified entity
-func (client *DialogFlowClient) EntitiesFindByIdRequest(eid string) (Entity, error) {
-	var response Entity
+func (client *DialogFlowClient) EntitiesFindByIdRequest(eid string) (models.Entity, error) {
+	var response models.Entity
 
 	if eid == "" {
 		return response, errors.New("eid cannot be empty")
@@ -148,7 +148,7 @@ func (client *DialogFlowClient) EntitiesFindByIdRequest(eid string) (Entity, err
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "entities/" + eid + "?v=" + client.GetApiVersion(),
 			Method: "GET",
 			Body:   nil,
@@ -165,16 +165,16 @@ func (client *DialogFlowClient) EntitiesFindByIdRequest(eid string) (Entity, err
 }
 
 // Creates a new entity
-func (client *DialogFlowClient) EntitiesCreateRequest(entity Entity) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) EntitiesCreateRequest(entity models.Entity) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(entity, Entity{}) {
+	if reflect.DeepEqual(entity, models.Entity{}) {
 		return response, errors.New("entity cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "entities?v=" + client.GetApiVersion(),
 			Method: "POST",
 			Body:   entity,
@@ -191,16 +191,16 @@ func (client *DialogFlowClient) EntitiesCreateRequest(entity Entity) (QueryRespo
 }
 
 // Adds entries to the specified entity.
-func (client *DialogFlowClient) EntitiesAddEntryRequest(eid string, entries []Entry) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) EntitiesAddEntryRequest(eid string, entries []models.Entry) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(entries, []Entry{}) || eid == "" {
+	if reflect.DeepEqual(entries, []models.Entry{}) || eid == "" {
 		return response, errors.New("entries and eid cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "entities/" + eid + "/entries?v=" + client.GetApiVersion(),
 			Method: "POST",
 			Body:   entries,
@@ -217,16 +217,16 @@ func (client *DialogFlowClient) EntitiesAddEntryRequest(eid string, entries []En
 }
 
 // Creates or updates an array of entities
-func (client *DialogFlowClient) EntitiesUpdateRequest(entities []Entity) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) EntitiesUpdateRequest(entities []models.Entity) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(entities, []Entity{}) {
+	if reflect.DeepEqual(entities, []models.Entity{}) {
 		return response, errors.New("entities cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "entities?v=" + client.GetApiVersion(),
 			Method: "PUT",
 			Body:   entities,
@@ -243,16 +243,16 @@ func (client *DialogFlowClient) EntitiesUpdateRequest(entities []Entity) (QueryR
 }
 
 // Updates the specified entity
-func (client *DialogFlowClient) EntitiesUpdateEntityRequest(eid string, entity Entity) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) EntitiesUpdateEntityRequest(eid string, entity models.Entity) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(entity, Entity{}) || eid == "" {
+	if reflect.DeepEqual(entity, models.Entity{}) || eid == "" {
 		return response, errors.New("entity and eid cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "entities/" + eid + "?v=" + client.GetApiVersion(),
 			Method: "PUT",
 			Body:   entity,
@@ -269,16 +269,16 @@ func (client *DialogFlowClient) EntitiesUpdateEntityRequest(eid string, entity E
 }
 
 // Updates entity entries
-func (client *DialogFlowClient) EntitiesUpdateEntityEntriesRequest(eid string, entries []Entry) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) EntitiesUpdateEntityEntriesRequest(eid string, entries []models.Entry) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(entries, Entry{}) || eid == "" {
+	if reflect.DeepEqual(entries, models.Entry{}) || eid == "" {
 		return response, errors.New("entries and eid cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "entities/" + eid + "/entries?v=" + client.GetApiVersion(),
 			Method: "PUT",
 			Body:   entries,
@@ -295,8 +295,8 @@ func (client *DialogFlowClient) EntitiesUpdateEntityEntriesRequest(eid string, e
 }
 
 // Deletes the specified entity
-func (client *DialogFlowClient) EntitiesDeleteRequest(eid string) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) EntitiesDeleteRequest(eid string) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
 	if eid == "" {
 		return response, errors.New("eid cannot be empty")
@@ -304,7 +304,7 @@ func (client *DialogFlowClient) EntitiesDeleteRequest(eid string) (QueryResponse
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "entities/" + eid + "?v=" + client.GetApiVersion(),
 			Method: "DELETE",
 			Body:   nil,
@@ -321,8 +321,8 @@ func (client *DialogFlowClient) EntitiesDeleteRequest(eid string) (QueryResponse
 }
 
 // Deletes entity entries
-func (client *DialogFlowClient) EntitiesDeleteEntriesRequest(eid string, values []string) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) EntitiesDeleteEntriesRequest(eid string, values []string) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
 	if len(values) == 0 || eid == "" {
 		return response, errors.New("values and eid cannot be empty")
@@ -330,7 +330,7 @@ func (client *DialogFlowClient) EntitiesDeleteEntriesRequest(eid string, values 
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "entities/" + eid + "/entries?v=" + client.GetApiVersion(),
 			Method: "DELETE",
 			Body:   values,
@@ -347,21 +347,21 @@ func (client *DialogFlowClient) EntitiesDeleteEntriesRequest(eid string, values 
 }
 
 // Adds one or multiple user entities for a session.
-func (client *DialogFlowClient) UserEntitiesCreateRequest(userEntities []UserEntity) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) UserEntitiesCreateRequest(userEntities []models.UserEntity) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(userEntities, []UserEntity{}) {
+	if reflect.DeepEqual(userEntities, []models.UserEntity{}) {
 		return response, errors.New("user entities cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "userEntities?v=" + client.GetApiVersion(),
 			Method: "POST",
 			Body: struct {
 				SessionID string
-				Entities  []UserEntity
+				Entities  []models.UserEntity
 			}{
 				SessionID: client.GetSessionID(),
 				Entities:  userEntities,
@@ -379,16 +379,16 @@ func (client *DialogFlowClient) UserEntitiesCreateRequest(userEntities []UserEnt
 }
 
 // Updates user entity specified by name
-func (client *DialogFlowClient) UserEntitiesUpdateRequest(name string, userEntity UserEntity) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) UserEntitiesUpdateRequest(name string, userEntity models.UserEntity) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(userEntity, UserEntity{}) || name == "" {
+	if reflect.DeepEqual(userEntity, models.UserEntity{}) || name == "" {
 		return response, errors.New("user entity and name cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "userEntities/" + name + "?v=" + client.GetApiVersion(),
 			Method: "PUT",
 			Body:   userEntity,
@@ -405,8 +405,8 @@ func (client *DialogFlowClient) UserEntitiesUpdateRequest(name string, userEntit
 }
 
 // Gets a user entity object by name
-func (client *DialogFlowClient) UserEntitiesFindByNameRequest(name string) (UserEntity, error) {
-	var response UserEntity
+func (client *DialogFlowClient) UserEntitiesFindByNameRequest(name string) (models.UserEntity, error) {
+	var response models.UserEntity
 
 	if name == "" {
 		return response, errors.New("name cannot be empty")
@@ -414,7 +414,7 @@ func (client *DialogFlowClient) UserEntitiesFindByNameRequest(name string) (User
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "userEntities/" + name + "?v=" + client.GetApiVersion() + "&sessionId=" + client.GetSessionID(),
 			Method: "GET",
 			Body:   nil,
@@ -431,8 +431,8 @@ func (client *DialogFlowClient) UserEntitiesFindByNameRequest(name string) (User
 }
 
 // Deletes a user entity object with a specified name
-func (client *DialogFlowClient) UserEntitiesDeleteByNameRequest(name string) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) UserEntitiesDeleteByNameRequest(name string) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
 	if name == "" {
 		return response, errors.New("name cannot be empty")
@@ -440,7 +440,7 @@ func (client *DialogFlowClient) UserEntitiesDeleteByNameRequest(name string) (Qu
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "userEntities/" + name + "?v=" + client.GetApiVersion() + "&sessionId=" + client.GetSessionID(),
 			Method: "DELETE",
 			Body:   nil,
@@ -457,12 +457,12 @@ func (client *DialogFlowClient) UserEntitiesDeleteByNameRequest(name string) (Qu
 }
 
 // Retrieves a list of all intents for the agent
-func (client *DialogFlowClient) IntentsFindAllRequest() ([]IntentAgent, error) {
-	var response []IntentAgent
+func (client *DialogFlowClient) IntentsFindAllRequest() ([]models.IntentAgent, error) {
+	var response []models.IntentAgent
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "intents?v=" + client.GetApiVersion(),
 			Method: "GET",
 			Body:   nil,
@@ -479,8 +479,8 @@ func (client *DialogFlowClient) IntentsFindAllRequest() ([]IntentAgent, error) {
 }
 
 // Retrieves the specified intent
-func (client *DialogFlowClient) IntentsFindByIdRequest(id string) (Intent, error) {
-	var response Intent
+func (client *DialogFlowClient) IntentsFindByIdRequest(id string) (models.Intent, error) {
+	var response models.Intent
 
 	if id == "" {
 		return response, errors.New("id cannot be empty")
@@ -488,7 +488,7 @@ func (client *DialogFlowClient) IntentsFindByIdRequest(id string) (Intent, error
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "intents/" + id + "?v=" + client.GetApiVersion(),
 			Method: "GET",
 			Body:   nil,
@@ -505,16 +505,16 @@ func (client *DialogFlowClient) IntentsFindByIdRequest(id string) (Intent, error
 }
 
 // Creates a new intent
-func (client *DialogFlowClient) IntentsCreateRequest(intent Intent) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) IntentsCreateRequest(intent models.Intent) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(intent, Intent{}) {
+	if reflect.DeepEqual(intent, models.Intent{}) {
 		return response, errors.New("intent cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "intents?v=" + client.GetApiVersion(),
 			Method: "POST",
 			Body:   intent,
@@ -531,16 +531,16 @@ func (client *DialogFlowClient) IntentsCreateRequest(intent Intent) (QueryRespon
 }
 
 // Updates the specified intent
-func (client *DialogFlowClient) IntentsUpdateRequest(id string, intent Intent) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) IntentsUpdateRequest(id string, intent models.Intent) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(intent, Intent{}) || id == "" {
+	if reflect.DeepEqual(intent, models.Intent{}) || id == "" {
 		return response, errors.New("intent and id cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "intents/" + id + "?v=" + client.GetApiVersion(),
 			Method: "PUT",
 			Body:   intent,
@@ -557,8 +557,8 @@ func (client *DialogFlowClient) IntentsUpdateRequest(id string, intent Intent) (
 }
 
 // Deletes the specified intent
-func (client *DialogFlowClient) IntentsDeleteRequest(id string) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) IntentsDeleteRequest(id string) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
 	if id == "" {
 		return response, errors.New("id cannot be empty")
@@ -566,7 +566,7 @@ func (client *DialogFlowClient) IntentsDeleteRequest(id string) (QueryResponse, 
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "intents/" + id + "?v=" + client.GetApiVersion(),
 			Method: "DELETE",
 			Body:   nil,
@@ -583,12 +583,12 @@ func (client *DialogFlowClient) IntentsDeleteRequest(id string) (QueryResponse, 
 }
 
 // retrieves the list of all currently active contexts for the specified session
-func (client *DialogFlowClient) ContextsFindAllRequest() ([]Context, error) {
-	var response []Context
+func (client *DialogFlowClient) ContextsFindAllRequest() ([]models.Context, error) {
+	var response []models.Context
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "contexts?sessionId=" + client.GetSessionID(),
 			Method: "GET",
 			Body:   nil,
@@ -605,8 +605,8 @@ func (client *DialogFlowClient) ContextsFindAllRequest() ([]Context, error) {
 }
 
 // Retrieves the specified context for the specified session
-func (client *DialogFlowClient) ContextsFindByNameRequest(name string) (Context, error) {
-	var response Context
+func (client *DialogFlowClient) ContextsFindByNameRequest(name string) (models.Context, error) {
+	var response models.Context
 
 	if name == "" {
 		return response, errors.New("name cannot be empty")
@@ -614,7 +614,7 @@ func (client *DialogFlowClient) ContextsFindByNameRequest(name string) (Context,
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "contexts/" + name + "?sessionId=" + client.GetSessionID(),
 			Method: "GET",
 			Body:   nil,
@@ -631,16 +631,16 @@ func (client *DialogFlowClient) ContextsFindByNameRequest(name string) (Context,
 }
 
 // Adds new active contexts to the specified session
-func (client *DialogFlowClient) ContextsCreateRequest(contexts []Context) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) ContextsCreateRequest(contexts []models.Context) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
-	if reflect.DeepEqual(contexts, []Context{}) {
+	if reflect.DeepEqual(contexts, []models.Context{}) {
 		return response, errors.New("contexts cannot be empty")
 	}
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "contexts?sessionId=" + client.GetSessionID(),
 			Method: "POST",
 			Body:   contexts,
@@ -657,12 +657,12 @@ func (client *DialogFlowClient) ContextsCreateRequest(contexts []Context) (Query
 }
 
 // Deletes all contexts from the specified session
-func (client *DialogFlowClient) ContextsDeleteRequest() (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) ContextsDeleteRequest() (models.QueryResponse, error) {
+	var response models.QueryResponse
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "contexts?sessionId=" + client.GetSessionID(),
 			Method: "DELETE",
 			Body:   nil,
@@ -679,8 +679,8 @@ func (client *DialogFlowClient) ContextsDeleteRequest() (QueryResponse, error) {
 }
 
 // Deletes the specified context from the specified session
-func (client *DialogFlowClient) ContextsDeleteByNameRequest(name string) (QueryResponse, error) {
-	var response QueryResponse
+func (client *DialogFlowClient) ContextsDeleteByNameRequest(name string) (models.QueryResponse, error) {
+	var response models.QueryResponse
 
 	if name == "" {
 		return response, errors.New("name cannot be empty")
@@ -688,7 +688,7 @@ func (client *DialogFlowClient) ContextsDeleteByNameRequest(name string) (QueryR
 
 	request := NewRequest(
 		client,
-		RequestOptions{
+		models.RequestOptions{
 			URI:    client.GetBaseUrl() + "contexts/" + name + "?sessionId=" + client.GetSessionID(),
 			Method: "DELETE",
 			Body:   nil,
@@ -714,7 +714,7 @@ func (client *DialogFlowClient) GetApiVersion() string {
 	if client.apiVersion != "" {
 		return client.apiVersion
 	}
-	return DEFAULT_API_VERSION
+	return models.DEFAULT_API_VERSION
 }
 
 // GET API.AI language
@@ -722,7 +722,7 @@ func (client *DialogFlowClient) GetApiLang() string {
 	if client.apiLang != "" {
 		return client.apiLang
 	}
-	return DEFAULT_CLIENT_LANG
+	return models.DEFAULT_CLIENT_LANG
 }
 
 // Get API.AI base url
@@ -730,7 +730,7 @@ func (client *DialogFlowClient) GetBaseUrl() string {
 	if client.apiBaseUrl != "" {
 		return client.apiBaseUrl
 	}
-	return DEFAULT_BASE_URL
+	return models.DEFAULT_BASE_URL
 }
 
 // Get current session ID
