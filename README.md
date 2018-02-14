@@ -69,4 +69,3 @@ func main() {
 ```shell
 go run main.go
 ```
-* Your can find more examples in [`examples`](examples) directory.
