@@ -3,6 +3,7 @@ package dialogflow
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/kompiuter/go-dialogflow/model"
@@ -10,42 +11,45 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+const (
+	apiBaseURL = "https://api.dialogflow.com/v1/"
+	apiVersion = "20150910" //https://dialogflow.com/docs/reference/agent/#protocol_version
+)
+
 type DialogFlowClient struct {
 	accessToken string
-	apiLang     string
 	apiVersion  string
-	apiBaseUrl  string
+	apiBaseURL  string
+	apiLang     string
 	sessionID   string
 }
 
+type Options struct {
+	AccessToken string
+	APIVersion  string
+	SessionID   string
+}
+
 // Create API.AI instance
-func NewDialogFlowClient(options model.Options) (*DialogFlowClient, error) {
-	if (reflect.DeepEqual(options, model.Options{}) || options.AccessToken == "") {
-		return nil, errors.New("Access token is required for new ApiAiClient instance")
+func NewDialogFlowClient(options Options) (*DialogFlowClient, error) {
+	if (reflect.DeepEqual(options, Options{}) || options.AccessToken == "") {
+		return nil, errors.New("access token is required for new dialogflow client")
 	}
 
 	client := &DialogFlowClient{
 		accessToken: options.AccessToken,
-	}
-
-	client.apiBaseUrl = options.ApiBaseUrl
-	if client.apiBaseUrl == "" {
-		client.apiBaseUrl = model.DEFAULT_BASE_URL
-	}
-
-	client.apiLang = options.ApiLang
-	if client.apiLang == "" {
-		client.apiLang = model.DEFAULT_CLIENT_LANG
-	}
-
-	client.apiVersion = options.ApiVersion
-	if client.apiVersion == "" {
-		client.apiVersion = model.DEFAULT_API_VERSION
+		apiBaseURL:  apiBaseURL,
+		apiLang:     "en",
+		apiVersion:  apiVersion,
 	}
 
 	client.sessionID = options.SessionID
 	if client.sessionID == "" {
-		u, _ := uuid.NewV4()
+		u, err := uuid.NewV4()
+		if err != nil {
+			return nil, fmt.Errorf("could not generate a session id: %v", err)
+		}
+
 		client.sessionID = u.String()
 	}
 
@@ -715,23 +719,17 @@ func (client *DialogFlowClient) GetApiVersion() string {
 	if client.apiVersion != "" {
 		return client.apiVersion
 	}
-	return model.DEFAULT_API_VERSION
+	return apiVersion
 }
 
 // GET API.AI language
 func (client *DialogFlowClient) GetApiLang() string {
-	if client.apiLang != "" {
-		return client.apiLang
-	}
-	return model.DEFAULT_CLIENT_LANG
+	return client.apiLang
 }
 
 // Get API.AI base url
 func (client *DialogFlowClient) GetBaseUrl() string {
-	if client.apiBaseUrl != "" {
-		return client.apiBaseUrl
-	}
-	return model.DEFAULT_BASE_URL
+	return client.apiBaseURL
 }
 
 // Get current session ID
