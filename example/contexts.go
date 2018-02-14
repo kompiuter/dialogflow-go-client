@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	df "github.com/kompiuter/dialogflow-go-client"
-	"github.com/kompiuter/dialogflow-go-client/model"
+	df "github.com/kompiuter/go-dialogflow"
+	"github.com/kompiuter/go-dialogflow/model"
 )
 
 func main() {

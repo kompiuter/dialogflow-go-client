@@ -1,6 +1,8 @@
-# dialogflow-go-client
+# go-dialogflow
 
-[![CircleCI](https://circleci.com/gh/mlabouardy/dialogflow-go-client.svg?style=svg)](https://circleci.com/gh/mlabouardy/dialogflow-go-client) [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0) [![Go Report Card](https://goreportcard.com/badge/github.com/mlabouardy/apiai-go-client)](https://goreportcard.com/report/github.com/mlabouardy/apiai-go-client)
+Original implementation by mlabouardy [dialogflow-go-client](github.com/mlabouardy/dialogflow-go-client).
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0) 
 
 <div align="center">
 	<img src="logo.png" width="50%"/>
@@ -12,7 +14,6 @@ This library allows integrating agents from the [DialogFlow](https://dialogflow.
 * [Installation](#installation)
 * [Features](#features)
 * [Usage](#usage)
-* [Documentation](#documentation)
 
 # Prerequsites
 
@@ -21,7 +22,7 @@ Create an [DialogFlow account](https://dialogflow.com/).
 # Installation
 
 ```shell
-go get github.com/mlabouardy/dialogflow-go-client
+go get github.com/kompiuter/go-dialogflow
 ```
 
 # Features
@@ -41,13 +42,14 @@ package main
 
 import (
 	"fmt"
-	. "github.com/mlabouardy/dialogflow-go-client"
-	. "github.com/mlabouardy/dialogflow-go-client/models"
 	"log"
+
+	df "github.com/kompiuter/go-dialogflow"
+	"github.com/kompiuter/go-dialogflow/model"
 )
 
 func main() {
-	err, client := NewDialogFlowClient(Options{
+	client, err := df.NewDialogFlowClient(model.Options{
 		AccessToken: "<API.AI TOKEN GOES HERE>",
 	})
 	if err != nil {
@@ -68,11 +70,3 @@ func main() {
 go run main.go
 ```
 * Your can find more examples in [`examples`](examples) directory.
-
-# Tutorials
-
-* [Messenger Bot with DialogFlow & Golang](http://www.blog.labouardy.com/bot-in-messenger-with-dialogflow-golang/)
-
-# Documentation
-
-Documentation is available at https://dialogflow.com/docs.
