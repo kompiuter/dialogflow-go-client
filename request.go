@@ -5,11 +5,18 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/kompiuter/go-dialogflow/model"
+	"net/url"
 )
 
-type Request struct {
+type requestOptions struct {
+	Path        string
+	SessionID   string
+	Method      string
+	Body        interface{}
+	QueryParams map[string]string
+}
+
+type request struct {
 	URI         string
 	Method      string
 	Headers     map[string]string
@@ -17,33 +24,32 @@ type Request struct {
 	QueryParams map[string]string
 }
 
-// Initialize a new HTTP request
-func NewRequest(client *DialogFlowClient, overridedRequestOptions model.RequestOptions) *Request {
+func newRequest(client *Client, options requestOptions) *request {
 	headers := map[string]string{
 		"Authorization": "Bearer " + client.GetAccessToken(),
 		"Content-Type":  "application/json",
 		"Accept":        "application/json",
 	}
 
-	request := &Request{
-		URI:         overridedRequestOptions.URI,
-		Method:      overridedRequestOptions.Method,
+	req := &request{
+		URI:         prepare(client, options.Path, options.SessionID),
+		Method:      options.Method,
 		Headers:     headers,
-		QueryParams: overridedRequestOptions.QueryParams,
-		Body:        overridedRequestOptions.Body,
+		QueryParams: options.QueryParams,
+		Body:        options.Body,
 	}
 
-	return request
+	return req
 }
 
-// Execute an HTTP request
-func (r *Request) Perform() ([]byte, error) {
+// Perform executes the HTTP request
+func (r *request) perform() ([]byte, error) {
 	var data []byte
 	client := &http.Client{}
 
 	req, err := http.NewRequest(r.Method, r.URI, nil)
 
-	if r.Method != "GET" {
+	if r.Method != http.MethodGet {
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(r.Body)
 		req, err = http.NewRequest(r.Method, r.URI, b)
@@ -71,4 +77,14 @@ func (r *Request) Perform() ([]byte, error) {
 	defer resp.Body.Close()
 
 	return ioutil.ReadAll(resp.Body)
+}
+
+func prepare(client *Client, path, session string) string {
+	m := url.Values{}
+	if session != "" {
+		m.Add("sessionId", session)
+	}
+	m.Add("v", client.GetProtocol())
+
+	return client.GetBaseURL() + path + "?" + m.Encode()
 }

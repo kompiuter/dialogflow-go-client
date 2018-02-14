@@ -2,6 +2,8 @@ package model
 
 type Intent struct {
 	ID                    string         `json:"id,omitempty"`
+	ParentID              string         `json:"parentId,omitempty"`
+	RootParentID          string         `json:"rootParentId,omitempty"`
 	Name                  string         `json:"name,omitempty"`
 	Auto                  bool           `json:"auto,omitempty"`
 	Contexts              []string       `json:"contexts,omitempty"`
@@ -23,9 +25,11 @@ type CortanaCommand struct {
 
 type UserSay struct {
 	ID         string `json:"userSays,omitempty"`
-	Data       Data   `json:"data,omitempty"`
+	Data       []Data `json:"data,omitempty"`
 	IsTemplate bool   `json:"isTemplate,omitempty"`
 	Count      int    `json:"count,omitempty"`
+	Updated    int    `json:"updated,omitempty"`
+	IsAuto     bool   `json:"isAuto,omitempty"`
 }
 
 type Response struct {

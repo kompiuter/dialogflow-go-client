@@ -1,56 +1,22 @@
 package dialogflow
 
-import (
-	"errors"
-	"fmt"
-	"reflect"
-
-	uuid "github.com/satori/go.uuid"
-)
-
-const (
-	apiBaseURL = "https://api.dialogflow.com/v1/"
-	apiVersion = "20150910" // https://dialogflow.com/docs/reference/agent/#protocol_version
-)
-
-// Client is a DialogFlow client
-type Client struct {
-	accessToken string
-	apiVersion  string
-	apiBaseURL  string
-	apiLang     string
-	sessionID   string
-}
-
-// Options can be used to modify the DialogFlow client upon creation
-type Options struct {
-	AccessToken string
-	APIVersion  string
-	SessionID   string
-}
-
 // NewClient creates a new DialogFlow client
-func NewClient(options Options) (*Client, error) {
-	if (reflect.DeepEqual(options, Options{}) || options.AccessToken == "") {
-		return nil, errors.New("access token is required for new dialogflow client")
-	}
-
+// You must provide a valid agent access token
+func NewClient(token string) *Client {
 	client := &Client{
-		accessToken: options.AccessToken,
-		apiBaseURL:  apiBaseURL,
+		accessToken: token,
+		apiBaseURL:  "https://api.dialogflow.com/v1/",
 		apiLang:     "en",
-		apiVersion:  apiVersion,
+		protocol:    "20150910",
 	}
 
-	client.sessionID = options.SessionID
-	if client.sessionID == "" {
-		u, err := uuid.NewV4()
-		if err != nil {
-			return nil, fmt.Errorf("could not generate a session id: %v", err)
-		}
+	return client
+}
 
-		client.sessionID = u.String()
-	}
-
-	return client, nil
+// SetProtocol sets the client's protocol
+// There are two protocols available:
+// 20150910 -> sys.number values are returned as strings (default)
+// 20170712 -> sys.number values are returned as integers
+func (c *Client) SetProtocol(s string) {
+	c.protocol = s
 }
