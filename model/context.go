@@ -1,9 +1,9 @@
 package model
 
 type Context struct {
-	Name       string            `json:"name,omitempty"`
-	Lifespan   int               `json:"lifespan,omitempty"`
-	Parameters map[string]string `json:"parameters,omitempty"`
+	Name       string                 `json:"name,omitempty"`
+	Lifespan   int                    `json:"lifespan,omitempty"`
+	Parameters map[string]interface{} `json:"parameters,omitempty"`
 }
 
 type ContextParameter struct {

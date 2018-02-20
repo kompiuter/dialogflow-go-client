@@ -254,11 +254,12 @@ func (client *Client) CreateUserEntities(session string, userEntities []model.Us
 	request := newRequest(
 		client,
 		requestOptions{
-			Path:   userEntityPath,
-			Method: http.MethodPost,
+			Path:      userEntityPath,
+			SessionID: session,
+			Method:    http.MethodPost,
 			Body: struct {
-				SessionID string
-				Entities  []model.UserEntity
+				SessionID string             `json:"sessionId"`
+				Entities  []model.UserEntity `json:"entities"`
 			}{
 				SessionID: session,
 				Entities:  userEntities,
