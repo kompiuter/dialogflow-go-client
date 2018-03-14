@@ -24,6 +24,7 @@ type Result struct {
 }
 
 type Fulfillment struct {
-	Speech   string    `json:"speech,omitempty"`
-	Messages []Message `json:"messages,omitempty"`
+	Speech   string        `json:"speech,omitempty"`
+	Messages []Message     `json:"messages,omitempty"`
+	Data     []interface{} `json:"data,omitempty"`
 }
